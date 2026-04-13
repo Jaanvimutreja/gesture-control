@@ -61,3 +61,4 @@ class Controller:
             if time.time() - self.last_click > 0.3:
                 pyautogui.click()
                 self.last_click = time.time()
+# Updated cursor smoothing
