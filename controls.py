@@ -34,10 +34,6 @@ class Controller:
         screen_x = np.interp(cam_x, (self.margin, self.cam_w - self.margin), (0, self.screen_w))
         screen_y = np.interp(cam_y, (self.margin, self.cam_h - self.margin), (0, self.screen_h))
 
-        # clamp
-        screen_x = max(0, min(self.screen_w, screen_x))
-        screen_y = max(0, min(self.screen_h, screen_y))
-
         # smoothing
         smooth_x = self.alpha * screen_x + (1 - self.alpha) * self.prev_x
         smooth_y = self.alpha * screen_y + (1 - self.alpha) * self.prev_y
@@ -47,18 +43,16 @@ class Controller:
 
         pyautogui.moveTo(int(smooth_x), int(smooth_y))
 
-        # 🔥 DRAG LOGIC
-        if dragging and not self.is_dragging:
-            pyautogui.mouseDown()
-            self.is_dragging = True
-
-        elif not dragging and self.is_dragging:
-            pyautogui.mouseUp()
-            self.is_dragging = False
-
-        # 🔥 CLICK LOGIC
-        if action == "LEFT_CLICK" and not self.is_dragging:
+        # CLICK
+        if action == "LEFT_CLICK":
             if time.time() - self.last_click > 0.3:
                 pyautogui.click()
                 self.last_click = time.time()
-# Updated cursor smoothing
+
+        # DRAG
+        if dragging and not self.is_dragging:
+            pyautogui.mouseDown()
+            self.is_dragging = True
+        elif not dragging and self.is_dragging:
+            pyautogui.mouseUp()
+            self.is_dragging = False
